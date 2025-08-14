@@ -199,6 +199,7 @@ uint8_t CRIT_TIMING OneWire::reset(void)
 	delayMicroseconds(480);
 	noInterrupts();
 	DIRECT_MODE_INPUT(reg, mask);	// allow it to float
+  DIRECT_WRITE_HIGH( reg , mask ); // enable pull-up resistor
 	delayMicroseconds(70);
 	r = !DIRECT_READ(reg, mask);
 	interrupts();
@@ -249,6 +250,7 @@ uint8_t CRIT_TIMING OneWire::read_bit(void)
 	DIRECT_WRITE_LOW(reg, mask);
 	delayMicroseconds(3);
 	DIRECT_MODE_INPUT(reg, mask);	// let pin float, pull up will raise
+  DIRECT_WRITE_HIGH( reg , mask ); // enable pull-up resistor	
 	delayMicroseconds(10);
 	r = DIRECT_READ(reg, mask);
 	interrupts();
@@ -272,7 +274,6 @@ void OneWire::write(uint8_t v, uint8_t power /* = 0 */) {
     if ( !power) {
 	noInterrupts();
 	DIRECT_MODE_INPUT(baseReg, bitmask);
-	DIRECT_WRITE_LOW(baseReg, bitmask);
 	interrupts();
     }
 }
@@ -283,7 +284,6 @@ void OneWire::write_bytes(const uint8_t *buf, uint16_t count, bool power /* = 0 
   if (!power) {
     noInterrupts();
     DIRECT_MODE_INPUT(baseReg, bitmask);
-    DIRECT_WRITE_LOW(baseReg, bitmask);
     interrupts();
   }
 }
